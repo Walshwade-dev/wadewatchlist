@@ -5,13 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MovieFinder - Discover Your Next Watch</title>
-  <script type="module" crossorigin src="/wadewatchlist/assets/index-C2yFcZa_.js"></script>
-  <link rel="stylesheet" crossorigin href="/wadewatchlist/assets/index-D7ECHQZt.css">
+  <script type="module" crossorigin src="/wadewatchlist/assets/index-CQ4yCy_0.js"></script>
+  <link rel="stylesheet" crossorigin href="/wadewatchlist/assets/index-DSGvC0mw.css">
 </head>
 
 <body class="bg-gray-50">
   <!-- App Container -->
-  <div id="app" class="min-h-screen">
+  <div id="app" class="min-h-screen flex flex-col">
 
     <!-- Header -->
     <header class="bg-white dark:bg-slate-800 dark:text-white shadow-sm sticky lg:py-4 top-0 z-50">
@@ -23,30 +23,32 @@
                 d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
             </svg>
           </span>
-
           <h1 class="text-2xl font-bold text-gray-800 dark:text-white">MovieFinder</h1>
         </div>
         <button id="watchlist-btn"
           class="flex items-center gap-2 px-4 py-2 bg-green-300/45 text-green-500 rounded-lg hover:bg-green-600/95 hover:text-green-100/60 transition">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg id="watch-svg" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span>Watchlist (<span id="watchlist-count">0</span>)</span>
+          <span>
+            <span class="watchlist-text">Watchlist</span>
+            <span class="watchlist-count" id="watchlist-bracket">(<span id="watchlist-count">0</span>)</span>
+          </span>
         </button>
       </div>
     </header>
 
-    <!-- Main Content -->
-    <main id="main-content" class="lg:max-w-full lg:mx-auto">
+    <!-- Main Content - ADDED flex-1 flex flex-col -->
+    <main id="main-content" class="flex-1 flex flex-col lg:max-w-full lg:mx-auto">
 
       <!-- Search Section -->
-      <section id="search-section" class="relative mb-12 bg-white dark:bg-slate-800 py-2">
+      <section id="search-section" class="page page--active relative mb-12 bg-white dark:bg-slate-800 py-2">
         <div class="text-center mb-8">
           <h2 class="text-4xl font-bold text-gray-800 dark:text-slate-200 mb-4">Find Your Next Movie</h2>
           <p class="text-gray-600 text-lg">Search from thousands of movies and series</p>
         </div>
-        <div class="absolute left-1/2 -translate-x-1/2 translate-y-1/2 bottom-0  min-w-[300px] md:max-w-[400px] mx-auto">
+        <div class="absolute left-1/2 -translate-x-1/2 translate-y-1/2 bottom-0 min-w-[300px] md:max-w-[400px] mx-auto">
           <form id="search-form" class="flex w-full">
             <div class="flex-2 relative">
               <input type="text" id="search-input" placeholder="Search movies..."
@@ -58,12 +60,15 @@
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <button type="submit"
-              class=" flex-1 px-8 py-3 bg-sky-600 text-white rounded-tr-3xl rounded-br-3xl font-medium hover:bg-sky-700 transition">
+            <button type="submit" id="search-btn"
+              class="flex-1 px-8 py-3 bg-sky-600 text-white rounded-tr-3xl rounded-br-3xl font-medium hover:bg-sky-700 transition">
               Search
             </button>
           </form>
         </div>
+
+        <!-- Add spacing for the absolutely positioned form -->
+        <div class="h-8"></div>
 
         <!-- Loading Indicator -->
         <div id="loading" class="hidden text-center mt-8">
@@ -79,21 +84,49 @@
         </div>
       </section>
 
-      <!-- Results Section -->
-      <section id="results-section" class="hidden">
-        <h3 class="text-2xl font-bold text-gray-800 mb-6">Search Results</h3>
-        <div id="results-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          <!-- Movie cards will be inserted here by JavaScript -->
+      <!-- Results Section - ADDED flex-1 -->
+      <section id="results-section" class="page flex-1 flex flex-col mb-20">
+        <!-- Empty State (shown by default) -->
+        <div id="empty-results" class="flex-1 flex items-center justify-center min-h-[400px]">
+          <div class="text-center">
+            <svg class="w-24 h-24 text-slate-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+            </svg>
+            <h3 class="text-2xl font-semibold text-slate-600 mb-2">Start Exploring</h3>
+            <p class="text-slate-500">Search for movies and series to begin your journey</p>
+          </div>
+        </div>
+
+        <!-- Results Grid (hidden by default, shown when search happens) -->
+        <div id="results-grid-wrapper" class="hidden px-4">
+          <h3 class="text-2xl font-bold text-gray-800 mb-6">Search Results</h3>
+          <div id="results-grid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-8">
+            <!-- Movie cards will be inserted here by JavaScript -->
+          </div>
         </div>
       </section>
 
-      <!-- Watchlist View -->
-      <section id="watchlist-section" class="hidden">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-2xl font-bold text-gray-800">My Watchlist</h3>
-          <button id="back-to-search" class="text-indigo-600 hover:text-indigo-700 font-medium">
-            ← Back to Search
-          </button>
+      <!-- Watchlist View - REMOVED DUPLICATE, kept only one -->
+      <section id="watchlist-section" class="page hidden flex-1 flex-col mb-20">
+        <div class="flex flex-col items-center justify-between mb-6">
+          <div class="watchlist-section__header w-full h-16 flex items-center justify-end dark:bg-slate-800">
+            <h3 class="text-2xl font-bold text-gray-800 dark:text-white px-4">My Watchlist</h3>
+          </div>
+          <div id="empty-results"
+            class="empty-watchlist cursor-pointer hover:underline hover:underline-offset-1 hover:text-sm hover:text-blue-400 flex-1 flex items-center justify-center min-h-[400px]">
+            <div class="text-center flex flex-col">
+              <div class="flex justify-center items-center gap-3">
+                <svg width="30" height="30" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="icon-plus">
+                  <circle cx="12" cy="12" r="12" fill="#1e293b" />
+                  <path d="M12 6v12M6 12h12" stroke="white" stroke-width="2" stroke-linecap="round" />
+                </svg>
+
+                <h3 class="text-2xl font-semibold text-slate-600 hover:text-blue-400">nothing here</h3>
+              </div>
+              <p class="text-slate-500 hover:text-blue-400">explore movies and series to add here</p>
+            </div>
+          </div>
         </div>
         <div id="watchlist-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           <!-- Watchlist items will be inserted here by JavaScript -->
@@ -121,8 +154,8 @@
       </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="fixed bottom-0 w-full bg-gray-800 text-white mt-16 py-8">
+    <!-- Footer - REMOVED fixed positioning -->
+    <footer class="bg-gray-800 text-white py-8 mt-auto">
       <div class="max-w-7xl mx-auto px-4 text-center">
         <p class="text-gray-400">Powered by OMDB API • Built with Vite & Tailwind CSS</p>
       </div>
