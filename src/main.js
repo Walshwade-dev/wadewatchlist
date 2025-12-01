@@ -21,6 +21,18 @@ const watchlistText = document.querySelector(".watchlist-text");
 const watchSvg = document.getElementById("watch-svg");
 const watchlistBracket = document.getElementById("watchlist-bracket");
 
+
+// =========================
+// setting up mobile Vh
+// =========================
+function fixMobileVH() {
+  document.documentElement.style.setProperty("--vh", `${window.innerHeight}px`);
+}
+
+window.addEventListener("load", fixMobileVH);
+window.addEventListener("resize", fixMobileVH);
+
+
 // =========================
 // PAGE ROUTING
 // =========================

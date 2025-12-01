@@ -39,4 +39,9 @@ This project helps me practice and strengthen:
 - **Vite** (for fast dev + optimized build)  
 - **OMDb API**  
 
+
+📧 Contact
+👤 Wade
+📍 Nairobi, Kenya
+🔗 GitHub: https://github.com/walshwade-dev
 ---
