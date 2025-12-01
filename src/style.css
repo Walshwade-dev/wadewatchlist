@@ -1,3 +1,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Ensure proper height calculation */
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#results-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#empty-results {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+
+/* PAGE ROUTING SYSTEM */
+.page {
+  display: none;              /* all pages are hidden by default */
+  width: 100%;
+}
+
+.page--active {
+  display: block;             /* active page becomes visible */
+}
